@@ -1,0 +1,30 @@
+<mat-card class="menu-card">
+  <mat-toolbar class="menu-toolbar">
+    <mat-toolbar-row>
+      <app-search (searchText)="searchItems($event)" (clearInput)="canselSearch()">
+      </app-search>
+    </mat-toolbar-row>
+  </mat-toolbar>
+</mat-card>
+
+<div *ngIf="isNoResult" class="noResult-container">
+  <div class="img-container">
+    <img src="../../../assets/noResult.png">
+  </div>
+  <div class="message-container">По Вашему запросу ничего не найдено. Попробуйте изменить запрос поиска</div>
+</div>
+
+<div fxLayout="row wrap" fxLayout.lt-sm="column" fxLayoutGap="20px" fxLayoutAlign="flex-start">
+  <ng-container *ngFor="let actor of actors">
+    <app-actor-item fxFlex="0 1 calc(20%-20px)" fxFlex.lt-md="0 1 calc(50% - 20px)" fxFlex.lt-sm="100%" [actorItem]="actor"></app-actor-item>
+  </ng-container>
+</div>
+
+<div class="main-container">
+  <div class="fixer-container">
+      <app-paging></app-paging>
+    <!-- <button mat-raised-button color="primary" [disabled]="isLastPage() || isLoadBtnDisabled" (click)="loadMore()">
+      Загрузить еще
+    </button> -->
+  </div>
+</div>

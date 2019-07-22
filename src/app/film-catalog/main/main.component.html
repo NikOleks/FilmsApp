@@ -1,0 +1,37 @@
+<div class="wrapper">
+
+  <h2>Вас приветсвует приложение о фильмах</h2>
+  <br>
+
+  <mat-card class="films-container">
+    <mat-card-header>
+      <mat-card-title>Популярные фильмы</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div fxLayout="row no-wrap" fxLayout.lt-sm="column" fxLayoutGap="10px" fxLayoutAlign="flex-start">
+        <ng-container *ngFor="let film of popularFilms">
+          <app-film-item fxFlex="0 1 calc(16.666%-10px)" fxFlex.lt-md="0 1 calc(50% - 10px)" fxFlex.lt-sm="100%" [filmItem]="film"></app-film-item>
+        </ng-container>
+      </div>
+    </mat-card-content>
+    <mat-card-actions align="end">
+      <p>Смотреть больше…</p>
+    </mat-card-actions>
+  </mat-card>
+
+
+  <!-- <h3>Популярные фильмы</h3>
+
+  <div fxLayout="row no-wrap" fxLayout.lt-sm="column" fxLayoutGap="10px" fxLayoutAlign="flex-start">
+    <ng-container *ngFor="let film of popularFilms">
+      <app-film-item fxFlex="0 1 calc(16.666%-10px)" fxFlex.lt-md="0 1 calc(50% - 10px)" fxFlex.lt-sm="100%" [filmItem]="film"></app-film-item>
+    </ng-container>
+  </div> -->
+  <hr>
+  <h3>Популярные актеры</h3>
+  <div fxLayout="row no-wrap" fxLayout.lt-sm="column" fxLayoutGap="10px" fxLayoutAlign="flex-start">
+    <ng-container *ngFor="let actor of popularActors">
+      <app-actor-item fxFlex="0 1 calc(16.666%-10px)" fxFlex.lt-md="0 1 calc(50% - 10px)" fxFlex.lt-sm="100%" [actorItem]="actor"></app-actor-item>
+    </ng-container>
+  </div>
+</div>
