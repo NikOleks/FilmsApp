@@ -1,10 +1,10 @@
-import { Injectable, Inject } from '@angular/core'; 
+import { Injectable, Inject } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Actor } from './actor.model';
 import { ConfigService } from './config.service';
 import { REQUEST_CONFIG } from './config';
-import {debounceTime} from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +14,14 @@ export class ActorService {
   totalPages: number;
   actorsList: Actor[];
   isLoading: boolean = false;
+  isSearchMode: boolean = false;
+  searchString: string;
   pagesBus$ = new Subject();
   actorsBus$ = new Subject();
   spinnerBus$ = new Subject();
+  searchBus$ = new Subject();
   popularActorsSubscription: Subscription;
+  searchActorsSubscription: Subscription;
   newTransform = (actor) => {
     return {
       id: actor.id,
@@ -25,33 +29,38 @@ export class ActorService {
       imgUrl: `${this.config.smallBackPath}${actor.profile_path}`
     }
   };
-  
+
   constructor(private http: HttpClient, @Inject(REQUEST_CONFIG) private config: ConfigService) { }
 
   loadingChanged() {
-    if (this.isLoading){
+    if (this.isLoading) {
       this.isLoading = false;
       console.log("spinner stop");
     }
-    else{
+    else {
       this.isLoading = true;
       console.log("spinner start");
     }
     this.spinnerBus$.next(this.isLoading);
   }
 
-  getPopularActors (page?: number){
+  getPopularActors(page?: number) {
     return this.http.get(`${this.config.personUrl}/popular?page=${page}${this.config.params}`).pipe(debounceTime(5000));
   }
 
-  actorsSubscriber(page: number){
+  getSearchActors(page: number, searchStr: string) {
+    return this.http.get(`${this.config.searchUrl}/person?query=${encodeURIComponent(searchStr)}${this.config.params}&page=${page}`);
+  }
+
+  actorsSubscriber() {
     this.loadingChanged();
-    this.popularActorsSubscription = this.getPopularActors(page).subscribe(
+    this.popularActorsSubscription = this.getPopularActors(this.currentPage).subscribe(
       (list: any) => {
         this.actorsList = list.results.map(this.newTransform);
         this.totalPages = list.total_pages;
+        this.isLastPage();
         this.loadingChanged();
-        this.pagesBus$.next(this.totalPages);
+        //this.pagesBus$.next(this.totalPages);
         this.actorsBus$.next(this.actorsList);
       },
       err => {
@@ -60,23 +69,60 @@ export class ActorService {
     );
   }
 
-  nextPage(page: number){
-    this.actorsSubscriber(page);
+  searchSubscriber(text: string) {
+    this.loadingChanged();
+    this.searchActorsSubscription = this.getSearchActors(this.currentPage, text).subscribe((list: any) => {
+      this.actorsList = list.results.map(this.newTransform);
+      this.totalPages = list.total_pages;
+      this.isLastPage();
+      this.loadingChanged();
+      this.actorsBus$.next(this.actorsList);
+    },
+    err => {
+        console.log("error");
+      }
+    );
   }
 
-  getActorsList(){
+  setFirstPage() {
+    this.currentPage = 1;
+  }
+
+  setSearchModeParams(searchText: string) {
+    this.isSearchMode = true;
+    this.searchString = searchText;
+    this.searchBus$.next(this.isSearchMode);
+    this.popularActorsSubscription.unsubscribe();
+  }
+
+  nextPage() {
+    if (this.isSearchMode) {
+      this.searchSubscriber(this.searchString);
+    }
+    else {
+      this.actorsSubscriber();
+    }
+    this.currentPage++;
+  }
+
+  isLastPage(): boolean {
+    console.log(`current page = ${this.currentPage}, total pages = ${this.totalPages}`);
+    return this.currentPage > this.totalPages;
+  }
+
+  getActorsList() {
     return this.actorsBus$.asObservable();
   }
 
-  getTotalPages(){
+  getTotalPages() {
     return this.pagesBus$.asObservable();
   }
 
-  getSpinnerStatus(){
+  getSpinnerStatus() {
     return this.spinnerBus$.asObservable();
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.popularActorsSubscription.unsubscribe();
   }
 }

@@ -26,7 +26,7 @@ export class MainComponent implements OnInit {
       this.popularFilms = list.slice(0,6);
       console.log(list.slice(0,6));
     });
-    this.actorsService.nextPage(1);
+    this.actorsService.nextPage();
     this.actorsSubscription = this.actorsService.getActorsList().subscribe( (list: Actor[]) => {
       this.popularActors = list.slice(0,6);
       console.log(list.slice(0,6));

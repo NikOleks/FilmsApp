@@ -15,9 +15,9 @@ import { ActorService } from '../shared/actor.service';
 })
 export class ActorsListComponent implements OnInit {
   actors: Actor[] = [];
-  shownList:  Actor[] = [];
-  currentPage: number;
-  totalPages: number;
+  //shownList:  Actor[] = [];
+  //currentPage: number;
+  //totalPages: number;
   isLoadBtnDisabled: boolean = false;
   isSearchMode: boolean = false;
   isNoResult: boolean;
@@ -25,47 +25,50 @@ export class ActorsListComponent implements OnInit {
   constructor(public actorService: ActorService) { }
 
   ngOnInit() {
-    this.currentPage = 1;
-    this.actorService.nextPage(this.currentPage);
-
+    //this.currentPage = 1;
+    this.actorService.setFirstPage();
+    this.actorService.nextPage();
     this.actorService.getActorsList().subscribe( (list: Actor[]) => {
       this.actors = [...this.actors, ...list];
     });
 
-    this.actorService.getTotalPages().subscribe( (pages: number) => {
+    /*this.actorService.getTotalPages().subscribe( (pages: number) => {
       this.totalPages = pages;
       this.isLastPage();
-    });
+    });*/
   }
 
   loadMore(){
-    this.currentPage++;
-    this.actorService.nextPage(this.currentPage);
+    //this.currentPage++;
+    this.actorService.nextPage();
   }
 
   isLastPage(): boolean {
-    console.log(`current page ${this.currentPage}, total page ${this.totalPages}`);
-    return ( this.currentPage >= this.totalPages );
+    //console.log(`current page ${this.currentPage}, total page ${this.totalPages}`);
+    return false;
   }
 
   searchItems(searchStr: string){
-    this.prepareList();
-    this.isLoadBtnDisabled = true;
-    this.isSearchMode = true;
+    //this.prepareList();
+    //this.isLoadBtnDisabled = true;
+    //this.isSearchMode = true;
     this.isNoResult = false;
-    this.actors = this.findActorsByName(searchStr);
+    this.actorService.setFirstPage();
+    this.actors.length = 0;
+    this.actorService.searchSubscriber(searchStr);
+    //this.actors = this.findActorsByName(searchStr);
     if (this.actors.length === 0){
       this.isNoResult = true;
     }
   }
 
-  prepareList() {
+  /*prepareList() {
     this.shownList.length === 0 ? 
                                 this.createShownList() : 
                                 this.setShownList();
-  }
+  }*/
 
-  createShownList(){
+  /*createShownList(){
       this.shownList = [...this.actors];
   }
 
@@ -90,7 +93,7 @@ export class ActorsListComponent implements OnInit {
     this.searchInput.clearSearchInput();
     this.isSearchMode = false;
     this.isNoResult = false;
-  }
+  }*/
 
 
 }
