@@ -57,8 +57,9 @@ export class ActorService {
     this.popularActorsSubscription = this.getPopularActors(this.currentPage).subscribe(
       (list: any) => {
         this.actorsList = list.results.map(this.newTransform);
-        this.totalPages = list.total_pages;
-        this.isLastPage();
+        if (this.totalPages === undefined){
+          this.totalPages = list.total_pages;
+        }
         this.loadingChanged();
         //this.pagesBus$.next(this.totalPages);
         this.actorsBus$.next(this.actorsList);
@@ -73,8 +74,9 @@ export class ActorService {
     this.loadingChanged();
     this.searchActorsSubscription = this.getSearchActors(this.currentPage, text).subscribe((list: any) => {
       this.actorsList = list.results.map(this.newTransform);
-      this.totalPages = list.total_pages;
-      this.isLastPage();
+      if (this.totalPages === undefined){
+        this.totalPages = list.total_pages;
+      }
       this.loadingChanged();
       this.actorsBus$.next(this.actorsList);
     },
@@ -93,6 +95,14 @@ export class ActorService {
     this.searchString = searchText;
     this.searchBus$.next(this.isSearchMode);
     this.popularActorsSubscription.unsubscribe();
+  }
+
+  exitSearchMode(){
+    this.isSearchMode = false;
+    this.searchBus$.next(this.isSearchMode);
+    if (this.searchActorsSubscription){
+      this.searchActorsSubscription.unsubscribe();
+    }
   }
 
   nextPage() {
@@ -114,16 +124,24 @@ export class ActorService {
     return this.actorsBus$.asObservable();
   }
 
-  getTotalPages() {
+  /*getTotalPages() {
     return this.pagesBus$.asObservable();
-  }
+  }*/
 
   getSpinnerStatus() {
     return this.spinnerBus$.asObservable();
   }
 
-  ngOnDestroy() {
+  getSearchMode(){
+    return this.searchBus$.asObservable();
+  }
+
+  popularActorsUnsubscribe() {
     this.popularActorsSubscription.unsubscribe();
+  }
+
+  searchActorsUnsubscribe(){
+    this.searchActorsSubscription.unsubscribe();
   }
 }
 

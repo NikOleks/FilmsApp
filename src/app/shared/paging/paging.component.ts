@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { FilmService } from 'src/app/film-catalog/shared/film.service';
+import { ActorService } from 'src/app/film-catalog/shared/actor.service';
+import { observable } from 'rxjs/internal/symbol/observable';
 
 @Component({
   selector: 'app-paging',
@@ -10,32 +12,26 @@ import { FilmService } from 'src/app/film-catalog/shared/film.service';
   styleUrls: ['./paging.component.css']
 })
 export class PagingComponent implements OnInit {
-
+  @Input() route: string;
   isLastPage: boolean = false;
+  routes: string[];
+  source: string;
   routerSubscription: Subscription;
-  target: string[];
+  targetService: FilmService | ActorService;
 
-  constructor(public router: Router, public filmService: FilmService) { 
-    this.routerSubscription = router.events.subscribe(event => {
-      if (event instanceof NavigationEnd){
-        console.log(event.url.split("/"));
-        this.target = event.url.split("/");
-        console.log(`constructor ${this.target[1]} page`);
-      }
-    })
+  constructor(public router: Router, public filmService: FilmService, public actorService: ActorService) {
   }
 
   ngOnInit() {
-    this.isLastPage = this.filmService.isLastPage();
+    if (this.route === "films") {
+      this.targetService = this.filmService;
+    }
+    if (this.route === "actors") {
+      this.targetService = this.actorService;
+    }
   }
 
-  loadMore(){
-    this.filmService.nextPage();
+  loadMore() {
+    this.targetService.nextPage();
   }
-
-  ngOnDestroy(){
-    console.log(`destructor ${this.target[1]} page`);
-    this.routerSubscription.unsubscribe();
-  }
-
 }

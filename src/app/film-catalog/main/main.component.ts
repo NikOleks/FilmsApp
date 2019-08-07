@@ -34,6 +34,7 @@ export class MainComponent implements OnInit {
   }
 
   ngOnDestroy() {
+    this.filmService.popularFilmsUnsubscribe();
     this.filmsSubscription.unsubscribe();
     this.actorsSubscription.unsubscribe();
   }

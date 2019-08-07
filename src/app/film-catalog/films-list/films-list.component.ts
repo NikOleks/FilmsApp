@@ -6,6 +6,7 @@ import { Actor } from '../shared/actor.model';
 import { FilmItemComponent } from '../shared/film-item/film-item.component';
 import { SearchComponent } from '../../shared/search/search.component';
 import { Action } from 'rxjs/internal/scheduler/Action';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-films-list',
@@ -18,8 +19,10 @@ export class FilmsListComponent implements OnInit {
   //currentPage: number;
   //totalPages: number;
   isLoadBtnDisabled: boolean = false;
+  isLastPage: boolean = true;
   isSearchMode: boolean = false;
   isNoResult: boolean;
+  filmsSubscription: Subscription;
   @ViewChild(SearchComponent) searchInput: SearchComponent;
   constructor(public filmService: FilmService) { 
     this.filmService.getSearchMode().subscribe( (searchStatus: boolean) => {
@@ -29,26 +32,17 @@ export class FilmsListComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.currentPage = 1;
     this.filmService.setFirstPage();
     this.filmService.nextPage();
-    this.filmService.getFilmsList().subscribe((list: Film[]) => {
+    this.filmsSubscription = this.filmService.getFilmsList().subscribe(
+      (list: Film[]) => {
       this.films = [...this.films, ...list];
+      this.isLastPage = this.filmService.isLastPage();
     });
-    /*this.filmService.getTotalPages().subscribe((pages: number) => {
-      this.totalPages = pages;
-      this.isLastPage();
-    });*/
   }
 
   loadMore() {
-    //this.currentPage++;
     this.filmService.nextPage();
-  }
-
-  isLastPage(): boolean {
-    //return ( this.currentPage >= this.totalPages );
-    return false;
   }
 
   searchItems(searchStr: string) {
@@ -58,12 +52,20 @@ export class FilmsListComponent implements OnInit {
     this.isNoResult = false;
     this.filmService.setFirstPage();
     this.films.length = 0;
-    this.filmService.searchSubscriber(searchStr);
-
+    this.filmService.setSearchModeParams(searchStr);
+    this.filmService.nextPage();
     if (this.films.length === 0) {
       this.isNoResult = true;
     }
   }
+
+  ngOnDestroy(){
+    this.filmsSubscription.unsubscribe();
+  }
+
+  /*isLastPage(): boolean {
+    return this.filmService.isLastPage();
+  }*/
 
   /*prepareList() {
     this.shownList.length === 0 ?

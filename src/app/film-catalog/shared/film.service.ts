@@ -68,23 +68,15 @@ export class FilmService {
     return this.http.get(`${this.config.searchUrl}/movie?query=${encodeURIComponent(searchStr)}${this.config.params}&page=${page}`);
   }
 
-  /*foo(){
-    this.subscription = this.getPopularFilms(1).subscribe(
-      (list: any) => {
-        return list.results.slice(0,6).map(this.newTransform);
-      }
-    );
-  }*/
-
   filmSubscriber() {
     this.loadingChanged();
     this.popularFilmsSubscription = this.getPopularFilms(this.currentPage).subscribe(
       (list: any) => {
         this.filmsList = list.results.map(this.newTransform);
-        this.totalPages = list.total_pages;
-        this.isLastPage();
+        if (this.totalPages === undefined){
+          this.totalPages = list.total_pages;
+        }
         this.loadingChanged()
-        //this.pagesBus$.next(this.totalPages);
         this.filmsBus$.next(this.filmsList);
       },
       err => {
@@ -98,11 +90,11 @@ export class FilmService {
     this.searchFilmsSubscription = this.getSearchFilms(this.currentPage, text).subscribe(
       (list: any) => {
         this.filmsList = list.results.map(this.newTransform);
-        this.totalPages = list.total_pages;
-        this.isLastPage();
+        if (this.totalPages === undefined){
+          this.totalPages = list.total_pages;
+        }
         this.loadingChanged()
         this.filmsBus$.next(this.filmsList);
-        console.log(this.filmsList);
       },
       err => {
         console.log("error");
@@ -160,9 +152,10 @@ export class FilmService {
     return this.searchBus$.asObservable();
   }
 
-  ngOnDestroy() {
-    console.log("film service destroy");
+  popularFilmsUnsubscribe(){
     this.popularFilmsSubscription.unsubscribe();
+  }
+  searchFilmsUnsubscribe(){
     this.searchFilmsSubscription.unsubscribe();
   }
 }

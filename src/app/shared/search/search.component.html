@@ -1,4 +1,4 @@
-<mat-form-field class="example-form-field" *ngIf="isVisible">
+<mat-form-field class="example-form-field">
   <input matInput type="text" placeholder="Поиск" [(ngModel)]="searchStr" (keyup.enter)="search()">
   <button mat-button *ngIf="searchStr" matSuffix mat-icon-button aria-label="Clear" (click)="closeSearch()">
     <mat-icon>close</mat-icon>
