@@ -111,6 +111,7 @@ export class FilmService {
     this.searchString = searchText;
     this.searchBus$.next(this.isSearchMode);
     this.popularFilmsSubscription.unsubscribe();
+    this.totalPages = undefined;
   }
 
   exitSearchMode(){
@@ -119,6 +120,7 @@ export class FilmService {
     if (this.searchFilmsSubscription){
       this.searchFilmsSubscription.unsubscribe();
     }
+    this.totalPages = undefined;
   }
 
   isLastPage(): boolean{

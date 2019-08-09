@@ -52,7 +52,7 @@ export class ActorService {
     return this.http.get(`${this.config.searchUrl}/person?query=${encodeURIComponent(searchStr)}${this.config.params}&page=${page}`);
   }
 
-  actorsSubscriber() {
+  actorSubscriber() {
     this.loadingChanged();
     this.popularActorsSubscription = this.getPopularActors(this.currentPage).subscribe(
       (list: any) => {
@@ -95,6 +95,7 @@ export class ActorService {
     this.searchString = searchText;
     this.searchBus$.next(this.isSearchMode);
     this.popularActorsSubscription.unsubscribe();
+    this.totalPages = undefined;
   }
 
   exitSearchMode(){
@@ -103,6 +104,7 @@ export class ActorService {
     if (this.searchActorsSubscription){
       this.searchActorsSubscription.unsubscribe();
     }
+    this.totalPages = undefined;
   }
 
   nextPage() {
@@ -110,7 +112,7 @@ export class ActorService {
       this.searchSubscriber(this.searchString);
     }
     else {
-      this.actorsSubscriber();
+      this.actorSubscriber();
     }
     this.currentPage++;
   }

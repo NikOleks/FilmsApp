@@ -17,7 +17,7 @@ export class MainComponent implements OnInit {
   filmsSubscription: Subscription;
   actorsSubscription: Subscription;
 
-  constructor(public filmService: FilmService, public actorsService: ActorService) { }
+  constructor(public filmService: FilmService, public actorService: ActorService) { }
 
   ngOnInit() { 
     this.filmService.setFirstPage();
@@ -26,8 +26,10 @@ export class MainComponent implements OnInit {
       this.popularFilms = list.slice(0,6);
       console.log(list.slice(0,6));
     });
-    this.actorsService.nextPage();
-    this.actorsSubscription = this.actorsService.getActorsList().subscribe( (list: Actor[]) => {
+
+    this.actorService.setFirstPage();
+    this.actorService.nextPage();
+    this.actorsSubscription = this.actorService.getActorsList().subscribe( (list: Actor[]) => {
       this.popularActors = list.slice(0,6);
       console.log(list.slice(0,6));
     })
@@ -36,6 +38,7 @@ export class MainComponent implements OnInit {
   ngOnDestroy() {
     this.filmService.popularFilmsUnsubscribe();
     this.filmsSubscription.unsubscribe();
+    this.actorService.popularActorsUnsubscribe();
     this.actorsSubscription.unsubscribe();
   }
 }

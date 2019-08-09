@@ -19,11 +19,11 @@ export class FilmsListComponent implements OnInit {
   //currentPage: number;
   //totalPages: number;
   isLoadBtnDisabled: boolean = false;
-  isLastPage: boolean = true;
+  //isLastPage: boolean = true;
   isSearchMode: boolean = false;
   isNoResult: boolean;
   filmsSubscription: Subscription;
-  @ViewChild(SearchComponent) searchInput: SearchComponent;
+  //@ViewChild(SearchComponent) searchInput: SearchComponent;
   constructor(public filmService: FilmService) { 
     this.filmService.getSearchMode().subscribe( (searchStatus: boolean) => {
       this.isSearchMode = searchStatus;
@@ -36,8 +36,8 @@ export class FilmsListComponent implements OnInit {
     this.filmService.nextPage();
     this.filmsSubscription = this.filmService.getFilmsList().subscribe(
       (list: Film[]) => {
-      this.films = [...this.films, ...list];
-      this.isLastPage = this.filmService.isLastPage();
+        this.films = [...this.films, ...list];
+      //this.isLastPage = this.filmService.isLastPage();
     });
   }
 

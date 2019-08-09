@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChildren, QueryList, SimpleChanges, ViewChild } from '@angular/core';
 import { FilmService } from '../shared/film.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { Film } from '../shared/film.model';
 import { Actor } from '../shared/actor.model';
 import { FilmItemComponent } from '../shared/film-item/film-item.component';
@@ -21,15 +21,17 @@ export class ActorsListComponent implements OnInit {
   isLoadBtnDisabled: boolean = false;
   isSearchMode: boolean = false;
   isNoResult: boolean;
-  @ViewChild(SearchComponent) searchInput: SearchComponent;
+  actorsSubscription: Subscription;
+  //@ViewChild(SearchComponent) searchInput: SearchComponent;
   constructor(public actorService: ActorService) { }
 
   ngOnInit() {
     //this.currentPage = 1;
     this.actorService.setFirstPage();
     this.actorService.nextPage();
-    this.actorService.getActorsList().subscribe( (list: Actor[]) => {
-      this.actors = [...this.actors, ...list];
+    this.actorsSubscription = this.actorService.getActorsList().subscribe( 
+      (list: Actor[]) => {
+        this.actors = [...this.actors, ...list];
     });
 
     /*this.actorService.getTotalPages().subscribe( (pages: number) => {
@@ -60,6 +62,10 @@ export class ActorsListComponent implements OnInit {
     if (this.actors.length === 0){
       this.isNoResult = true;
     }
+  }
+
+  ngOnDestroy(){
+    this.actorsSubscription.unsubscribe();
   }
 
   /*prepareList() {
