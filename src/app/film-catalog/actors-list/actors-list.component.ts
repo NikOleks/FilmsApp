@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChildren, QueryList, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, QueryList, SimpleChanges } from '@angular/core';
 import { FilmService } from '../shared/film.service';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { Film } from '../shared/film.model';
+//import { Film } from '../shared/film.model';
 import { Actor } from '../shared/actor.model';
-import { FilmItemComponent } from '../shared/film-item/film-item.component';
+//import { FilmItemComponent } from '../shared/film-item/film-item.component';
 import { SearchComponent } from '../../shared/search/search.component';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { ActorService } from '../shared/actor.service';
@@ -15,50 +15,40 @@ import { ActorService } from '../shared/actor.service';
 })
 export class ActorsListComponent implements OnInit {
   actors: Actor[] = [];
-  //shownList:  Actor[] = [];
-  //currentPage: number;
-  //totalPages: number;
   isLoadBtnDisabled: boolean = false;
+  isLastPage: boolean = true;
   isSearchMode: boolean = false;
   isNoResult: boolean;
   actorsSubscription: Subscription;
-  //@ViewChild(SearchComponent) searchInput: SearchComponent;
-  constructor(public actorService: ActorService) { }
+  searchModeSubscription: Subscription;
+  
+  constructor(public actorService: ActorService) { 
+    this.searchModeSubscription = this.actorService.getSearchMode().subscribe( (searchStatus: boolean) => {
+      this.isSearchMode = searchStatus;
+      this.actors.length = 0;
+    });
+  }
 
   ngOnInit() {
-    //this.currentPage = 1;
     this.actorService.setFirstPage();
     this.actorService.nextPage();
     this.actorsSubscription = this.actorService.getActorsList().subscribe( 
       (list: Actor[]) => {
         this.actors = [...this.actors, ...list];
+        this.isLastPage = this.actorService.isLastPage();
     });
-
-    /*this.actorService.getTotalPages().subscribe( (pages: number) => {
-      this.totalPages = pages;
-      this.isLastPage();
-    });*/
   }
 
   loadMore(){
-    //this.currentPage++;
     this.actorService.nextPage();
   }
 
-  isLastPage(): boolean {
-    //console.log(`current page ${this.currentPage}, total page ${this.totalPages}`);
-    return false;
-  }
-
   searchItems(searchStr: string){
-    //this.prepareList();
-    //this.isLoadBtnDisabled = true;
-    //this.isSearchMode = true;
     this.isNoResult = false;
     this.actorService.setFirstPage();
     this.actors.length = 0;
-    this.actorService.searchSubscriber(searchStr);
-    //this.actors = this.findActorsByName(searchStr);
+    this.actorService.setSearchModeParams(searchStr);
+    this.actorService.nextPage();
     if (this.actors.length === 0){
       this.isNoResult = true;
     }
@@ -66,40 +56,9 @@ export class ActorsListComponent implements OnInit {
 
   ngOnDestroy(){
     this.actorsSubscription.unsubscribe();
+    if (this.isSearchMode){
+      this.actorService.exitSearchMode();
+    }
+    this.searchModeSubscription.unsubscribe();
   }
-
-  /*prepareList() {
-    this.shownList.length === 0 ? 
-                                this.createShownList() : 
-                                this.setShownList();
-  }*/
-
-  /*createShownList(){
-      this.shownList = [...this.actors];
-  }
-
-  setShownList(){
-      this.actors = [...this.shownList];
-  }
-
-  findActorsByName(actorName: string): Actor[]{
-    return this.actors.filter(actor => 
-      actor.name.toLowerCase().search(actorName.toLowerCase()) >= 0);
-  }
-
-  canselSearch(){
-    //this.isBtnLoadDisabled = false;
-    this.setShownList();
-    this.cleareSearchParams();
-  }
-
-  cleareSearchParams(){
-    this.shownList.length = 0;
-    this.isLoadBtnDisabled = false;
-    this.searchInput.clearSearchInput();
-    this.isSearchMode = false;
-    this.isNoResult = false;
-  }*/
-
-
 }

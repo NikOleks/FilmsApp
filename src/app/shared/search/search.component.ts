@@ -17,8 +17,9 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.clearSearchInput();
-    if (this.route === "films"){
+    console.log("Search component create");
+    //this.clearSearchInput();
+    /*if (this.route === "films"){
       this.targetService = this.filmService;
     }
     else if (this.route === "actors"){
@@ -26,11 +27,21 @@ export class SearchComponent implements OnInit {
     }
     else{
       this.closeSearch();
+    }*/
+  }
+
+  setTargetService(){
+    if (this.route === "films" && this.targetService !== this.filmService){
+      this.targetService = this.filmService;
+    }
+    else if (this.route === "actors" && this.targetService !== this.actorService){
+      this.targetService = this.actorService;
     }
   }
 
   search(){
     console.log(this.searchStr);
+    this.setTargetService();
     if (this.searchStr.length >= 3){
       this.targetService.setFirstPage();
       this.targetService.setSearchModeParams(this.searchStr);

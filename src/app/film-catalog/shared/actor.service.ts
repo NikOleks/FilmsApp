@@ -11,17 +11,17 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class ActorService {
   currentPage: number;
-  totalPages: number;
+  totalPages: number = -1;
   actorsList: Actor[];
   isLoading: boolean = false;
   isSearchMode: boolean = false;
   searchString: string;
-  pagesBus$ = new Subject();
   actorsBus$ = new Subject();
   spinnerBus$ = new Subject();
   searchBus$ = new Subject();
   popularActorsSubscription: Subscription;
   searchActorsSubscription: Subscription;
+  
   newTransform = (actor) => {
     return {
       id: actor.id,
@@ -57,11 +57,10 @@ export class ActorService {
     this.popularActorsSubscription = this.getPopularActors(this.currentPage).subscribe(
       (list: any) => {
         this.actorsList = list.results.map(this.newTransform);
-        if (this.totalPages === undefined){
+        if (this.totalPages === -1){
           this.totalPages = list.total_pages;
         }
         this.loadingChanged();
-        //this.pagesBus$.next(this.totalPages);
         this.actorsBus$.next(this.actorsList);
       },
       err => {
@@ -74,7 +73,7 @@ export class ActorService {
     this.loadingChanged();
     this.searchActorsSubscription = this.getSearchActors(this.currentPage, text).subscribe((list: any) => {
       this.actorsList = list.results.map(this.newTransform);
-      if (this.totalPages === undefined){
+      if (this.totalPages === -1){
         this.totalPages = list.total_pages;
       }
       this.loadingChanged();
@@ -95,16 +94,17 @@ export class ActorService {
     this.searchString = searchText;
     this.searchBus$.next(this.isSearchMode);
     this.popularActorsSubscription.unsubscribe();
-    this.totalPages = undefined;
+    this.totalPages = -1;
   }
 
   exitSearchMode(){
     this.isSearchMode = false;
+    this.searchString = "";
     this.searchBus$.next(this.isSearchMode);
     if (this.searchActorsSubscription){
       this.searchActorsSubscription.unsubscribe();
     }
-    this.totalPages = undefined;
+    this.totalPages = -1;
   }
 
   nextPage() {
@@ -125,10 +125,6 @@ export class ActorService {
   getActorsList() {
     return this.actorsBus$.asObservable();
   }
-
-  /*getTotalPages() {
-    return this.pagesBus$.asObservable();
-  }*/
 
   getSpinnerStatus() {
     return this.spinnerBus$.asObservable();

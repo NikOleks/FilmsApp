@@ -5,25 +5,24 @@ import { Film } from './film.model';
 import { ConfigService } from './config.service';
 import { REQUEST_CONFIG } from './config';
 import { debounceTime } from 'rxjs/operators';
-import { map } from 'rxjs/internal/operators/map';
+//import { map } from 'rxjs/internal/operators/map';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FilmService {
   currentPage: number;
-  totalPages: number;
+  totalPages: number = -1;
   filmsList: Film[];
   isLoading: boolean = false;
   searchString: string;
   isSearchMode: boolean = false;
   filmsBus$ = new Subject();
-  //pagesBus$ = new Subject();
   spinnerBus$ = new Subject();
   searchBus$ = new Subject();
   popularFilmsSubscription: Subscription;
   searchFilmsSubscription: Subscription;
-  //subscription: Subscription;
+  
   newTransform = (film) => {
     return {
       id: film.id,
@@ -73,7 +72,7 @@ export class FilmService {
     this.popularFilmsSubscription = this.getPopularFilms(this.currentPage).subscribe(
       (list: any) => {
         this.filmsList = list.results.map(this.newTransform);
-        if (this.totalPages === undefined){
+        if (this.totalPages === -1){
           this.totalPages = list.total_pages;
         }
         this.loadingChanged()
@@ -90,7 +89,7 @@ export class FilmService {
     this.searchFilmsSubscription = this.getSearchFilms(this.currentPage, text).subscribe(
       (list: any) => {
         this.filmsList = list.results.map(this.newTransform);
-        if (this.totalPages === undefined){
+        if (this.totalPages === -1){
           this.totalPages = list.total_pages;
         }
         this.loadingChanged()
@@ -111,16 +110,17 @@ export class FilmService {
     this.searchString = searchText;
     this.searchBus$.next(this.isSearchMode);
     this.popularFilmsSubscription.unsubscribe();
-    this.totalPages = undefined;
+    this.totalPages = -1;
   }
 
   exitSearchMode(){
     this.isSearchMode = false;
+    this.searchString = "";
     this.searchBus$.next(this.isSearchMode);
     if (this.searchFilmsSubscription){
       this.searchFilmsSubscription.unsubscribe();
     }
-    this.totalPages = undefined;
+    this.totalPages = -1;
   }
 
   isLastPage(): boolean{
@@ -141,10 +141,6 @@ export class FilmService {
   getFilmsList() {
     return this.filmsBus$.asObservable();
   }
-
-  /*getTotalPages() {
-    return this.pagesBus$.asObservable();
-  }*/
 
   getSpinnerStatus() {
     return this.spinnerBus$.asObservable();

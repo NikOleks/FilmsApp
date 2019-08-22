@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChildren, QueryList, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, QueryList, SimpleChanges } from '@angular/core';
 import { FilmService } from '../shared/film.service';
 import { Observable, Subject } from 'rxjs';
 import { Film } from '../shared/film.model';
-import { Actor } from '../shared/actor.model';
-import { FilmItemComponent } from '../shared/film-item/film-item.component';
+//import { Actor } from '../shared/actor.model';
+//import { FilmItemComponent } from '../shared/film-item/film-item.component';
 import { SearchComponent } from '../../shared/search/search.component';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -15,17 +15,15 @@ import { Subscription } from 'rxjs/internal/Subscription';
 })
 export class FilmsListComponent implements OnInit {
   films: Film[] = [];
-  //shownList: Film[] = [];
-  //currentPage: number;
-  //totalPages: number;
   isLoadBtnDisabled: boolean = false;
-  //isLastPage: boolean = true;
+  isLastPage: boolean = true;
   isSearchMode: boolean = false;
   isNoResult: boolean;
   filmsSubscription: Subscription;
-  //@ViewChild(SearchComponent) searchInput: SearchComponent;
+  searchModeSubscription: Subscription;
+
   constructor(public filmService: FilmService) { 
-    this.filmService.getSearchMode().subscribe( (searchStatus: boolean) => {
+    this.searchModeSubscription = this.filmService.getSearchMode().subscribe( (searchStatus: boolean) => {
       this.isSearchMode = searchStatus;
       this.films.length = 0;
     });
@@ -37,7 +35,7 @@ export class FilmsListComponent implements OnInit {
     this.filmsSubscription = this.filmService.getFilmsList().subscribe(
       (list: Film[]) => {
         this.films = [...this.films, ...list];
-      //this.isLastPage = this.filmService.isLastPage();
+        this.isLastPage = this.filmService.isLastPage();
     });
   }
 
@@ -46,9 +44,6 @@ export class FilmsListComponent implements OnInit {
   }
 
   searchItems(searchStr: string) {
-    //this.prepareList();
-    //this.isLoadBtnDisabled = true;
-    //this.isSearchMode = true;
     this.isNoResult = false;
     this.filmService.setFirstPage();
     this.films.length = 0;
@@ -61,41 +56,9 @@ export class FilmsListComponent implements OnInit {
 
   ngOnDestroy(){
     this.filmsSubscription.unsubscribe();
+    if (this.isSearchMode){
+      this.filmService.exitSearchMode();
+    }
+    this.searchModeSubscription.unsubscribe();
   }
-
-  /*isLastPage(): boolean {
-    return this.filmService.isLastPage();
-  }*/
-
-  /*prepareList() {
-    this.shownList.length === 0 ?
-      this.createShownList() :
-      this.setShownList();
-  }*/
-
-  /*createShownList() {
-    this.shownList = [...this.films];
-  }*/
-
-  /*setShownList() {
-    this.films = [...this.shownList];
-  }*/
-
-  /*findFilmsByName(filmName: string): Film[] {
-    return this.films.filter(film =>
-      film.name.toLowerCase().search(filmName.toLowerCase()) >= 0);
-  }*/
-
-  /*canselSearch() {
-    this.setShownList();
-    this.cleareSearchParams();
-  }*/
-
-  /*cleareSearchParams() {
-    this.shownList.length = 0;
-    this.isLoadBtnDisabled = false;
-    this.searchInput.clearSearchInput();
-    this.isSearchMode = false;
-    this.isNoResult = false;
-  }*/
 }

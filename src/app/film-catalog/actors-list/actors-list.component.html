@@ -1,12 +1,3 @@
-<mat-card class="menu-card">
-  <mat-toolbar class="menu-toolbar">
-    <mat-toolbar-row>
-      <app-search (searchText)="searchItems($event)" (clearInput)="canselSearch()">
-      </app-search>
-    </mat-toolbar-row>
-  </mat-toolbar>
-</mat-card>
-
 <div *ngIf="isNoResult" class="noResult-container">
   <div class="img-container">
     <img src="../../../assets/noResult.png">
@@ -20,12 +11,11 @@
   </ng-container>
 </div>
 
-<!--div class="main-container">
+<div class="main-container">
   <div class="fixer-container">
-      <app-paging></app-paging>
-     <button mat-raised-button color="primary" [disabled]="isLastPage() || isLoadBtnDisabled" (click)="loadMore()">
+     <button mat-raised-button color="primary" [disabled]="isLastPage || isLoadBtnDisabled" (click)="loadMore()">
       Загрузить еще
     </button> 
   </div>
 </div>
--->
+
