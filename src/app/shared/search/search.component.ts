@@ -61,6 +61,8 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    this.targetService.exitSearchMode();
+    if (this.targetService){
+      this.targetService.exitSearchMode();
+    }
   }
 }

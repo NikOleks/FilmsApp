@@ -12,7 +12,6 @@ import { SearchComponent } from 'src/app/shared/search/search.component';
 export class AppComponent {
 
   isSearchVisible: boolean = false;
-  //isPagingVisible: boolean = false;
   routerSubscription: Subscription;
   target: string[];
   currentRoute: string;
@@ -28,14 +27,12 @@ export class AppComponent {
       if (event instanceof NavigationEnd){
        this.target = event.url.split("/");
         if (this.target[1] === "films" || this.target[1] === "actors"){
-          //this.isPagingVisible = true;
           this.isSearchVisible = true;
           if (this.searchComp){
             this.searchComp.clearSearchInput();
           }
         }
         else{
-          //this.isPagingVisible = false;
           this.isSearchVisible = false;
         }
         this.currentRoute = this.target[1];
