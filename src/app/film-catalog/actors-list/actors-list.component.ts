@@ -1,12 +1,12 @@
 import { Component, OnInit, QueryList, SimpleChanges } from '@angular/core';
-import { FilmService } from '../shared/film.service';
+//import { FilmService } from '../shared/services/film.service';
 import { Observable, Subject, Subscription } from 'rxjs';
 //import { Film } from '../shared/film.model';
-import { Actor } from '../shared/actor.model';
+import { Actor } from '../shared/models/actor.model';
 //import { FilmItemComponent } from '../shared/film-item/film-item.component';
 import { SearchComponent } from '../../shared/search/search.component';
 import { Action } from 'rxjs/internal/scheduler/Action';
-import { ActorService } from '../shared/actor.service';
+import { ActorService } from '../shared/services/actor.service';
 
 @Component({
   selector: 'app-actors-list',

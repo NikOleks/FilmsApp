@@ -2,8 +2,8 @@ import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationEnd } from '@angular/router';
 import { Subscription, of } from 'rxjs';
-import { FilmService } from 'src/app/film-catalog/shared/film.service';
-import { ActorService } from 'src/app/film-catalog/shared/actor.service';
+import { FilmService } from 'src/app/film-catalog/shared/services/film.service';
+import { ActorService } from 'src/app/film-catalog/shared/services/actor.service';
 import { observable } from 'rxjs/internal/symbol/observable';
 
 @Component({

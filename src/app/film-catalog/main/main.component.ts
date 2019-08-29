@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FilmService } from '../shared/film.service';
+import { FilmService } from '../shared/services/film.service';
 import { take } from 'rxjs/operators';
-import { Film } from 'src/app/film-catalog/shared/film.model';
-import { Actor } from 'src/app/film-catalog/shared/actor.model';
+import { Film } from 'src/app/film-catalog/shared/models/film.model';
+import { Actor } from 'src/app/film-catalog/shared/models/actor.model';
 import { Subscription } from 'rxjs';
-import { ActorService } from 'src/app/film-catalog/shared/actor.service';
+import { ActorService } from 'src/app/film-catalog/shared/services/actor.service';
 
 @Component({
   selector: 'main',

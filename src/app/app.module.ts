@@ -11,10 +11,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from './shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { requestConfig, REQUEST_CONFIG } from 'src/app/film-catalog/shared/config';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,

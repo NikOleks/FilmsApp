@@ -1,5 +1,5 @@
 import {InjectionToken} from '@angular/core';
-import { ConfigService } from './config.service';
+import { ConfigService } from './services/config.service';
 
 const apiUrl: string = "https://api.themoviedb.org/3";
 const apiKey: string = '0994e7679a856150aadcecf7de489bce';

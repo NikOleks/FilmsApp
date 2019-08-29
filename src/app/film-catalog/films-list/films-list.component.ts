@@ -1,7 +1,7 @@
 import { Component, OnInit, QueryList, SimpleChanges } from '@angular/core';
-import { FilmService } from '../shared/film.service';
+import { FilmService } from '../shared/services/film.service';
 import { Observable, Subject } from 'rxjs';
-import { Film } from '../shared/film.model';
+import { Film } from '../shared/models/film.model';
 //import { Actor } from '../shared/actor.model';
 //import { FilmItemComponent } from '../shared/film-item/film-item.component';
 import { SearchComponent } from '../../shared/search/search.component';

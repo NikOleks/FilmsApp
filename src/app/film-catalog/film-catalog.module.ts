@@ -9,6 +9,7 @@ import { FilmItemComponent } from './shared/film-item/film-item.component';
 import { ActorItemComponent } from './shared/actor-item/actor-item.component';
 import { SharedModule } from '../shared/shared.module';
 import { ActorsListComponent } from './actors-list/actors-list.component';
+import { ActorReviewComponent } from './actor-review/actor-review.component';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { ActorsListComponent } from './actors-list/actors-list.component';
     FilmsListComponent,
     FilmItemComponent,
     ActorItemComponent,
-    ActorsListComponent
+    ActorsListComponent,
+    ActorReviewComponent
   ]
 })
 export class FilmCatalogModule { }

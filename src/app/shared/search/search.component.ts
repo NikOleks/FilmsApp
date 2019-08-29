@@ -1,6 +1,6 @@
 import { Component, OnInit, Input} from '@angular/core';
-import { FilmService } from 'src/app/film-catalog/shared/film.service';
-import { ActorService } from 'src/app/film-catalog/shared/actor.service';
+import { FilmService } from 'src/app/film-catalog/shared/services/film.service';
+import { ActorService } from 'src/app/film-catalog/shared/services/actor.service';
 
 @Component({
   selector: 'app-search',

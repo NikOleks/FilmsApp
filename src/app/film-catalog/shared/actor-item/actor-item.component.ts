@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Actor } from '../actor.model';
+import { Actor } from '../models/actor.model';
 
 @Component({
   selector: 'app-actor-item',
